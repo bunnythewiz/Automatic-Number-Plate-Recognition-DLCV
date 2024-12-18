@@ -1,4 +1,4 @@
-# Automatic Number Plate Recognition
+![image](https://github.com/user-attachments/assets/384089a7-5eee-43a5-81fd-58f67a1933cf)# Automatic Number Plate Recognition
 
 ## Overview
 This project implements an **Automatic Number Plate Recognition (ANPR)** system using state-of-the-art deep learning models. The system detects vehicles and extracts license plates from video footage, providing smooth and accurate results.
@@ -16,16 +16,21 @@ This project implements an **Automatic Number Plate Recognition (ANPR)** system 
 ## **Model**
 
 ### Vehicle Detector
+![](https://github.com/user-attachments/assets/526191df-be98-464e-9e2c-e5b811e0dbe2)
+
 - **Model:** YOLOv8 pre-trained model (YOLOv8n).
 - **Training Dataset:** COCO dataset.
 - **Download the model:** [YOLOv8n Pre-trained Model](https://huggingface.co/Ultralytics/YOLOv8/blob/main/yolov8n.pt).
 - **Focus Classes:** Detection of vehicles with number plates.
+  ![Screenshot 2024-12-18 151743](https://github.com/user-attachments/assets/aa3a860d-43ed-43af-ba95-e7b8689a4e55)
+
 
 ### License Plate Detector
 - **Model Download:** [License Plate Detector Model](https://drive.google.com/file/d/1LAGCUu4qA9bdovxBlCwzZBgdhvhLQYSw/view?usp=sharing).
 - Below is an example of the training progress and final evaluation of the license plate detection model:
 
-  ![Training Progress](https://prod-files-secure.s3.us-west-2.amazonaws.com/54ae63eb-1ab8-4263-900b-c85c76ed9354/3b305ea4-1901-4dc8-bdf4-88d99f3e36e8/image.png)
+  ![Model Training and Evaluation](https://github.com/user-attachments/assets/288ccb65-ece4-47a8-a0e6-68880b690d5b)
+
 
 ---
 
