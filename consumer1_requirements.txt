@@ -1,8 +1,0 @@
-boto3==1.24.89
-imageio>=2.33.0
-filterpy==1.4.5
-opencv-python==4.10.0.84
-av==11.0.0
-lap==0.5.12
-scikit-image==0.25.0
-ultralytics
