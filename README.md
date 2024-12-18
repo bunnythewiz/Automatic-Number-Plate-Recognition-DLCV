@@ -109,5 +109,174 @@ These inconsistencies result in unreliable license plate recognition.
 - Improves the accuracy and reliability of license plate recognition.
 - Maintains consistent tracking of car IDs, even with partial or imperfect detections in some frames.
 
+---
 
+# AWS Deployment Pipeline
 
+![image](https://github.com/user-attachments/assets/c51641d2-5d14-474f-be55-32b85b4275a0)
+
+## **Setting Up Producer**
+
+1. **Create a Video Stream**  
+   - Go to **Kinesis Video Streams** and create a video stream.
+
+2. **Launch EC2 Instance**  
+   - Navigate to EC2 and launch a t2.small instance with Ubuntu as the operating system.
+   - Use a key pair to securely connect to your instance.
+   - SSH into the EC2 instance using the following command:
+   ```bash
+   ssh -i /path/to/your/private-key.pem ubuntu@your-ec2-public-ip-address
+   ```
+
+3. **Install Dependencies and Setup Producer SDK**  
+   Execute the following commands in the EC2 instance:
+
+    ```bash
+    sudo apt update
+
+    git clone https://github.com/awslabs/amazon-kinesis-video-streams-producer-sdk-cpp.git
+
+    mkdir -p amazon-kinesis-video-streams-producer-sdk-cpp/build
+
+    cd amazon-kinesis-video-streams-producer-sdk-cpp/build
+
+    sudo apt-get install libssl-dev libcurl4-openssl-dev liblog4cplus-dev libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev gstreamer1.0-plugins-base-apps gstreamer1.0-plugins-bad gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-tools
+
+    sudo apt install cmake
+
+    sudo apt-get install g++
+
+    sudo apt-get install build-essential
+
+    cmake .. -DBUILD_DEPENDENCIES=OFF -DBUILD_GSTREAMER_PLUGIN=ON
+
+    make
+
+    sudo make install
+
+    cd ..
+
+    export GST_PLUGIN_PATH=`pwd`/build
+
+    export LD_LIBRARY_PATH=`pwd`/open-source/local/lib
+    ```
+
+4. **Download Video for Testing**
+
+    ```bash
+    cd ~
+    wget https://raw.githubusercontent.com/computervisioneng/real-time-number-plate-recognition-anpr/main/sample_30fps_1440.mp4
+    ```
+
+5. **Create IAM User for Access**
+
+   - Go to **IAM** and create a new user with **AmazonKinesisVideoStreamsFullAccess** permissions.
+   - Select the IAM user you created, go to *Security credentials*, and create access keys.
+
+6. **Stream the Video**
+
+   - Replace stream-name, access-key, secret-key, and region-name with the appropriate values for your setup and execute the following command on the EC2 instance:
+
+    ```bash
+    gst-launch-1.0 -v filesrc location="./sample_30fps_1440.mp4" ! qtdemux name=demux ! queue ! h264parse ! video/x-h264,stream-format=avc,alignment=au ! kvssink name=sink stream-name="stream-name" access-key="access-key" secret-key="secret-key" aws-region="region-name" streaming-type=offline demux. ! queue ! aacparse ! sink.
+    ```
+## Setting up Consumer #1: Object Detection and Tracking
+
+1. **Launch EC2 Instance**  
+   - Go to **EC2** and launch a `t2.xlarge` instance with 30GB storage size and ubuntu as the operating system.
+   - Use a key pair to securely connect to your instance.
+   - SSH into the EC2 instance using the following command:
+   ```bash
+   ssh -i /path/to/your/private-key.pem ubuntu@your-ec2-public-ip-address
+   ```
+
+2. **Install Dependencies and Set Up Virtual Environment**  
+   - Execute the following commands in the EC2 instance:
+
+   ```bash
+   sudo apt update
+   
+   sudo apt install python3-virtualenv
+   
+   virtualenv venv --python=python3
+   
+   source venv/bin/activate
+   ```
+
+3. **Clone Repositories and Install Required Packages**
+    - Clone the required repositories:
+    ```bash
+    git clone https://github.com/computervisioneng/amazon-kinesis-video-streams-consumer-library-for-python.git
+    
+    cd amazon-kinesis-video-streams-consumer-library-for-python
+    
+    git clone https://github.com/abewley/sort.git
+    ```
+    
+    - Install necessary Python dependencies:
+    ```bash
+    pip install -r requirements.txt
+    
+    pip install -r sort/requirements.txt
+    
+    pip install ultralytics
+    ```
+    - If you encounter any dependency issues use the consumer1_requirements.txt file, which is present in the repository:
+    ```bash
+    pip install -r consumer1_requirements.txt
+    ```
+     
+    - Install system dependencies:
+    ```bash
+    sudo apt-get update && sudo apt-get install ffmpeg libsm6 libxext6  -y
+    
+    sudo apt-get install python3-tk
+    ```
+
+4. **Set Up IAM Role for EC2**
+
+    - Go to IAM and create an access role for the EC2 instance with the following policies:
+      - AmazonKinesisVideoStreamsFullAccess
+      - AmazonDynamoDBFullAccess
+      - AmazonS3FullAccess
+      - AmazonSQSFullAccess
+    - Attach the IAM role to the EC2 instance.
+5. **Download Models**
+
+    - Transfer the both the models to your EC2 instance using the following command:
+    ```bash
+    scp -i /path/to/your/private-key.pem /path/to/your/model-file.pt ubuntu@<ec2-public-ip>:~/
+    ```
+6. **Set Up AWS Resources**
+
+    - Go to S3 and create an S3 bucket.
+    - Go to DynamoDB and create two tables (on-demand mode).
+    - Go to SQS and create a FIFO queue.
+    - Go to Lambda and create a new Lambda function with the files:
+      - lambda_function.py
+      - util.py
+7. **Set Up IAM Role for Lambda**
+
+    - Go to IAM and create an access role for the Lambda function with the following policies:
+      - AmazonDynamoDBFullAccess
+      - AmazonS3FullAccess
+      - AmazonSQSFullAccess
+      - TextractFullAccess
+    - Attach the IAM role to the Lambda function.
+    - Edit the Lambda function timeout to 1 minute.
+    - Set asynchronous invocation Retry attempts to 0
+8. **Set Up S3 Event Notification**
+
+    - Go to the S3 bucket and create a new event notification to trigger the Lambda function.
+9. **Edit Variable Names**
+
+    - In the EC2 instance, go to amazon-kinesis-video-streams-consumer-library-for-python/kvs_consumer_library_example_object_detection_and_tracking.py and edit the region-name, stream-name, bucket-name, table-name and queue-url.
+    - In the Lambda function, go to lambda_function.py and edit the region_name, TableName and QueueUrl.
+10. **Run Object Detection and Tracking**
+
+    - Execute the following commands in the EC2 instance:
+    ```bash
+    cd ~/amazon-kinesis-video-streams-consumer-library-for-python
+    
+    python kvs_consumer_library_example_object_detection_and_tracking.py
+    ```
