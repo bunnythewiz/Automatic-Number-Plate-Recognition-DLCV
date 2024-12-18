@@ -236,7 +236,8 @@ These inconsistencies result in unreliable license plate recognition.
     
     sudo apt-get install python3-tk
     ```
-
+    - If you encounter an issue related to sort/sort.py, it may be due to the backend configuration for Matplotlib.
+    - Replace 'TkAgg' with 'Agg'
 4. **Set Up IAM Role for EC2**
 
     - Go to IAM and create an access role for the EC2 instance with the following policies:
