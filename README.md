@@ -181,6 +181,9 @@ These inconsistencies result in unreliable license plate recognition.
     ```bash
     gst-launch-1.0 -v filesrc location="./sample_30fps_1440.mp4" ! qtdemux name=demux ! queue ! h264parse ! video/x-h264,stream-format=avc,alignment=au ! kvssink name=sink stream-name="stream-name" access-key="access-key" secret-key="secret-key" aws-region="region-name" streaming-type=offline demux. ! queue ! aacparse ! sink.
     ```
+
+    ![Screenshot 2024-12-18 131722](https://github.com/user-attachments/assets/3e8f4cff-e149-459d-a61b-ae8e6793925d)
+
 ## Setting up Consumer #1: Object Detection and Tracking
 
 1. **Launch EC2 Instance**  
@@ -281,6 +284,8 @@ These inconsistencies result in unreliable license plate recognition.
     
     python kvs_consumer_library_example_object_detection_and_tracking.py
     ```
+    ![Screenshot 2024-12-18 131502](https://github.com/user-attachments/assets/ff75a9b2-b1f8-43f9-afaf-0a34165cb985)
+
 ## Setting Up Consumer #2: Visualization
 1. **Clone the Repository**
     - Clone the required repository:
@@ -316,6 +321,11 @@ These inconsistencies result in unreliable license plate recognition.
 
     pip install pandas
     ```
+    - If you encounter any dependency issues use the consumer1_requirements.txt file, which is present in the repository:
+    ```bash
+    pip install -r consumer2_requirements.txt
+    ```
+    
 6. **Execute the Scripts**
     - Run the following scripts in order:
     
