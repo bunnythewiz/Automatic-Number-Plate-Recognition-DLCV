@@ -84,10 +84,7 @@ This project showcases an **Automatic Number Plate Recognition (ANPR)** system t
 Bounding boxes and license plate information are inconsistently detected across video frames, leading to intermittent appearance and disappearance of vehicles during playback, making tracking more complex.
 
 ### 2. OCR Variability
-The OCR process can produce multiple inconsistent readings of the same license plate due to:
-- Extra spaces
-- Special characters
-- Misread letters
+The OCR process can produce multiple inconsistent readings of the same license plate due to Extra spaces, Special characters or Misread letters.
 
 These inconsistencies result in unreliable license plate recognition.
 
