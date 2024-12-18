@@ -20,7 +20,8 @@ This project showcases an **Automatic Number Plate Recognition (ANPR)** system t
 - **Model:** YOLOv8 pre-trained model (YOLOv8n).
 - **Training Dataset:** COCO dataset.
 - **Download the model:** [YOLOv8n Pre-trained Model](https://huggingface.co/Ultralytics/YOLOv8/blob/main/yolov8n.pt).
-- Although the model has the capability to classify the following classes, we will only focus on detecting the classes with number plates:
+- We will only focus on detecting the classes with number plates:
+  
   ![Screenshot 2024-12-18 151743](https://github.com/user-attachments/assets/aa3a860d-43ed-43af-ba95-e7b8689a4e55)
 
 
@@ -75,6 +76,8 @@ This project showcases an **Automatic Number Plate Recognition (ANPR)** system t
 # Addressing Ambiguities in CSV Data and OCR Results
 
 ## Issues Identified
+![image](https://github.com/user-attachments/assets/cb386e04-8ee5-4c08-a90f-3e6ff0b5b005)
+
 
 ### 1. Car ID Inconsistencies
 Bounding boxes and license plate information are inconsistently detected across video frames, leading to intermittent appearance and disappearance of vehicles during playback, making tracking more complex.
