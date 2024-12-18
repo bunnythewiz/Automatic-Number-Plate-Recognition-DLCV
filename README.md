@@ -3,6 +3,7 @@
 ## Overview
 This project showcases an **Automatic Number Plate Recognition (ANPR)** system that leverages Object Detection, Object Tracking, and Optical Character Recognition to accurately identify vehicles and extract license plate information from video footage, delivering seamless and precise results.
 
+- A detailed report is attached as `ANPR_Report`.
 ---
 
 ## **Data**
