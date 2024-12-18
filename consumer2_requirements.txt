@@ -1,5 +1,0 @@
-boto3==1.24.89
-opencv-python==4.10.0.84
-imageio>=2.33.0
-av==11.0.0
-pandas
