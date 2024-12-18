@@ -53,6 +53,7 @@ This project showcases an **Automatic Number Plate Recognition (ANPR)** system t
 1. **Create and Activate Environment:**
     ```bash
     conda create --prefix ./env python==3.10 -y
+    
     conda activate ./env
     ```
 
@@ -279,4 +280,57 @@ These inconsistencies result in unreliable license plate recognition.
     cd ~/amazon-kinesis-video-streams-consumer-library-for-python
     
     python kvs_consumer_library_example_object_detection_and_tracking.py
+    ```
+## Setting Up Consumer #2: Visualization
+1. **Clone the Repository**
+    - Clone the required repository:
+    ```bash
+    git clone https://github.com/computervisioneng/amazon-kinesis-video-streams-consumer-library-for-python.git
+    ```
+2. **Download Required Files and Directories**
+    - Download the following files and directory into your working environment:
+      - main_plot.py
+      - process_queue.py
+      - The directory loading_frames
+3. **Set Up IAM User**
+    - Go to IAM in the AWS Management Console.
+    - Create a new user with the following permissions:
+      - AmazonKinesisVideoStreamsFullAccess
+      - AmazonDynamoDBFullAccess
+      - AmazonSQSFullAccess
+    - After creating the user, go to Security credentials and generate access keys.
+    - purge if there are any messages in sqs queue
+4. **Edit Variables in Code**
+    - Open the following files and edit the necessary variables with your specific configuration:
+      - main_plot.py
+      - process_queue.py
+      - amazon-kinesis-video-streams-consumer-library-for-python/kvs_consumer_library_example_visualization.py
+5. **Create a Virtual Environment and Install Requirements**
+    - Set up a Python virtual environment and install dependencies:
+    ```bash
+    python3 -m venv venv
+    
+    source venv/bin/activate
+    
+    pip install -r requirements.txt
+
+    pip install pandas
+    ```
+6. **Execute the Scripts**
+    - Run the following scripts in order:
+    
+    - Start queue processing:
+    
+    ```bash
+    python process_queue.py
+    ```
+    
+    - Start the visualization script:
+    ```bash
+    python main_plot.py
+    ```
+    - Start the object detection and tracking:
+    
+    ```bash
+    python amazon-kinesis-video-streams-consumer-library-for-python/kvs_consumer_library_python/kvs_consumer_library_example_object_detection_and_tracking.py.
     ```
