@@ -1,5 +1,9 @@
 # Automatic Number Plate Recognition
 
+## Demo
+
+https://github.com/Muhammad-Zeerak-Khan/Automatic-License-Plate-Recognition-using-YOLOv8/assets/79400407/1af57131-3ada-470a-b798-95fff00254e6
+
 ## Overview
 This project showcases an **Automatic Number Plate Recognition (ANPR)** system that leverages Object Detection, Object Tracking, and Optical Character Recognition to accurately identify vehicles and extract license plate information from video footage, delivering seamless and precise results.
 
