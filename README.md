@@ -1,7 +1,7 @@
-![image](https://github.com/user-attachments/assets/384089a7-5eee-43a5-81fd-58f67a1933cf)# Automatic Number Plate Recognition
+# Automatic Number Plate Recognition
 
 ## Overview
-This project implements an **Automatic Number Plate Recognition (ANPR)** system using state-of-the-art deep learning models. The system detects vehicles and extracts license plates from video footage, providing smooth and accurate results.
+This project showcases an **Automatic Number Plate Recognition (ANPR)** system that leverages Object Detection, Object Tracking, and Optical Character Recognition to accurately identify vehicles and extract license plate information from video footage, delivering seamless and precise results.
 
 ---
 
@@ -16,18 +16,18 @@ This project implements an **Automatic Number Plate Recognition (ANPR)** system 
 ## **Model**
 
 ### Vehicle Detector
-![](https://github.com/user-attachments/assets/526191df-be98-464e-9e2c-e5b811e0dbe2)
 
 - **Model:** YOLOv8 pre-trained model (YOLOv8n).
 - **Training Dataset:** COCO dataset.
 - **Download the model:** [YOLOv8n Pre-trained Model](https://huggingface.co/Ultralytics/YOLOv8/blob/main/yolov8n.pt).
-- **Focus Classes:** Detection of vehicles with number plates.
+- Although the model has the capability to classify the following classes, we will only focus on detecting the classes with number plates:
   ![Screenshot 2024-12-18 151743](https://github.com/user-attachments/assets/aa3a860d-43ed-43af-ba95-e7b8689a4e55)
 
 
 ### License Plate Detector
+![image](https://github.com/user-attachments/assets/2686f62b-57ae-486d-ba13-918a9c26f748)
 - **Model Download:** [License Plate Detector Model](https://drive.google.com/file/d/1LAGCUu4qA9bdovxBlCwzZBgdhvhLQYSw/view?usp=sharing).
-- Below is an example of the training progress and final evaluation of the license plate detection model:
+- Below is the training progress and final evaluation of the license plate detection model:
 
   ![Model Training and Evaluation](https://github.com/user-attachments/assets/288ccb65-ece4-47a8-a0e6-68880b690d5b)
 
@@ -72,21 +72,37 @@ This project implements an **Automatic Number Plate Recognition (ANPR)** system 
       ```
 
 ---
+# Addressing Ambiguities in CSV Data and OCR Results
 
-## **Features**
-- Real-time vehicle detection.
-- Accurate license plate recognition.
-- Smooth interpolation for missing frame values.
-- Visualized results for better analysis.
+## Issues Identified
 
----
+### 1. Car ID Inconsistencies
+Bounding boxes and license plate information are inconsistently detected across video frames, leading to intermittent appearance and disappearance of vehicles during playback, making tracking more complex.
 
-## **Acknowledgments**
-- **Models:** YOLOv8 by Ultralytics.
-- **Datasets:** Roboflow License Plate Dataset.
-- **Tracking Algorithm:** SORT by Abe W.
+### 2. OCR Variability
+The OCR process can produce multiple inconsistent readings of the same license plate due to:
+- Extra spaces
+- Special characters
+- Misread letters
 
----
+These inconsistencies result in unreliable license plate recognition.
 
-### License
-This project is licensed under the MIT License. See the LICENSE file for details.
+## Proposed Solutions
+
+### 1. Linear Interpolation for Missing Frames
+**Problem:** Inconsistent car ID detection across frames.  
+**Approach:** Apply linear interpolation to fill gaps in bounding box detections.  
+**Outcome:** Ensures a continuous presence of bounding boxes for each car across its lifespan in the video.
+
+### 2. Selecting the Best OCR Result
+**Problem:** Variability in OCR results for license plates.  
+**Approach:** Choose the license plate reading with the highest OCR confidence score across all frames.  
+**Outcome:** Replaces inconsistent OCR results with the most reliable reading, ensuring consistent and accurate license plate numbers.
+
+## Benefits
+- Eliminates flickering of car detections during video playback, ensuring smoother tracking.
+- Improves the accuracy and reliability of license plate recognition.
+- Maintains consistent tracking of car IDs, even with partial or imperfect detections in some frames.
+
+
+
