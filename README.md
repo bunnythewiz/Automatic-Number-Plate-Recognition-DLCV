@@ -112,6 +112,82 @@ These inconsistencies result in unreliable license plate recognition.
 
 ---
 
+# Containerize using Docker
+## 1. Clone the Repository
+Create a directory for your project
+```bash
+mkdir my-project
+
+cd my-project
+```
+
+Clone the repository
+```bash
+git clone https://github.com/bunnythewiz/Automatic-Number-Plate-Recognition-DLCV.git
+
+cd Automatic-Number-Plate-Recognition-DLCV
+```
+
+## 2. Create Dockerfile
+Create a new file named Dockerfile in your project root:
+
+```bash
+# Build stage
+FROM python:3.10.12-slim AS builder
+WORKDIR /app
+
+# Copy requirements
+COPY requirements.txt . 
+
+# Install build dependencies and Python packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential gcc g++ libgl1-mesa-glx libglib2.0-0 \
+    && pip install --no-cache-dir --prefer-binary -r requirements.txt \
+    && rm -rf /var/lib/apt/lists/*
+
+# Runtime stage
+FROM python:3.10.12-slim
+WORKDIR /app
+
+# Environment variables
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgl1-mesa-glx libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy installed packages from builder
+COPY --from=builder /usr/local/lib/python3.10/site-packages/ /usr/local/lib/python3.10/site-packages/
+
+# Copy application files and models
+COPY main.py util.py add_missing_data.py visualize.py ./ 
+COPY ./Yolo_Models ./
+COPY ./sample.mp4 ./
+
+# Command to run the app
+CMD ["python", "main.py"]
+```
+
+## 3. Build image
+
+```bash
+docker build -t anpr:latest .
+```
+
+![Screenshot 2024-12-20 145137](https://github.com/user-attachments/assets/55491266-a6fd-4c08-99e8-0488bfd4cd9b)
+
+
+## 4. Run Docker Container
+
+```bash
+docker run -d --name anpr-run anpr:latest
+```
+
+
+---
+
 # AWS Deployment Pipeline
 
 ![image](https://github.com/user-attachments/assets/c51641d2-5d14-474f-be55-32b85b4275a0)
